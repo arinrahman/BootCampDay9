@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bidding System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .winner, .bids {
+            margin-top: 20px;
+            color: #444;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .bids ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .bids ul li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bidding System</h1>
+        <input type="text" id="name" placeholder="Enter your name">
+        <input type="number" id="bid" placeholder="Enter your bidding price">
+        <button onclick="addBid()">Submit Bid</button>
+        <button onclick="resetSystem()">Reset</button>
+
+        <div class="bids">
+            <h3>Current Bids:</h3>
+            <ul id="bidsList"></ul>
+        </div>
+        <div id="winner" class="winner"></div>
+    </div>
+
+    <script>
+        const bids = {};
+
+        function addBid() {
+            const name = document.getElementById('name').value.trim();
+            const bid = parseInt(document.getElementById('bid').value);
+
+            if (!name || isNaN(bid) || bid < 0) {
+                alert('Please enter a valid name and a non-negative bid.');
+                return;
+            }
+
+            // Add the bid to the list
+            bids[name] = bid;
+
+            // Update the UI
+            updateBidsList();
+            updateWinner();
+
+            // Clear input fields
+            document.getElementById('name').value = '';
+            document.getElementById('bid').value = '';
+        }
+
+        function updateBidsList() {
+            const bidsList = document.getElementById('bidsList');
+            bidsList.innerHTML = ''; // Clear the list
+
+            for (const [name, bid] of Object.entries(bids)) {
+                const li = document.createElement('li');
+                li.textContent = `${name}: $${bid}`;
+                bidsList.appendChild(li);
+            }
+        }
+
+        function updateWinner() {
+            let maxBid = 0;
+            let maxName = '';
+
+            for (const [name, bid] of Object.entries(bids)) {
+                if (bid > maxBid) {
+                    maxBid = bid;
+                    maxName = name;
+                }
+            }
+
+            const winnerDiv = document.getElementById('winner');
+            if (maxName) {
+                winnerDiv.textContent = `The winner is ${maxName} with a bid of $${maxBid}!`;
+            } else {
+                winnerDiv.textContent = 'No bids have been placed yet.';
+            }
+        }
+
+        function resetSystem() {
+            // Clear all bids
+            for (const name in bids) {
+                delete bids[name];
+            }
+
+            // Update UI
+            document.getElementById('bidsList').innerHTML = '';
+            document.getElementById('winner').textContent = '';
+        }
+    </script>
+</body>
+</html>
